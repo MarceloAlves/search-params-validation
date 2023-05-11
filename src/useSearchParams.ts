@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from "react";
-import qs from "query-string";
+import qs, { ParsedQuery } from "query-string";
 import type { StringifyOptions } from "query-string";
 import { z, ZodSchema } from "zod";
 // import { useHistory, useLocation } from "react-router-dom";
@@ -45,21 +45,25 @@ type Stringify = (options?: {
  * ```
  */
 
-
-// If schema is available return type should be a partial zod schema. if not, return regular query string result
-export function useSearchParams<Schema extends z.ZodSchema>({ schema, onUpdate }: { schema?: Schema, onUpdate: (querystring: string) => void }): Schema extends true ? z.infer<Schema> : qs.ParsedQuery<string> {
+type Actions = {
+  readonly append: Append;
+  readonly remove: Remove;
+  readonly replaceAll: ReplaceAll;
+  readonly clear: Clear;
+  readonly stringify: Stringify;
+}
+type UseSearchParamsReturn<Schema extends unknown> = Schema extends z.ZodObject<any> ? [z.infer<Schema>, Actions] : [ParsedQuery<string>, Actions]
+export function useSearchParams<Schema extends unknown>({ schema, onUpdate }: { schema?: Schema, onUpdate: (querystring: string) => void }): UseSearchParamsReturn<Schema> {
   // const history = useHistory();
   // const location = useLocation();
 
   const currentSearch = useMemo(() => {
     const queryString = qs.parse(window.location.search);
     if (schema) {
-      // return partial zod schema result
-      return schema.parse(queryString);
+      return (schema as any as z.ZodObject<any>).parse(queryString)
+    } else {
+      return queryString
     }
-
-    // return regular query string result ParsedQuery<string>
-    return queryString
   }, [location.search, schema]);
 
   const append: Append = useCallback(
@@ -151,5 +155,5 @@ export function useSearchParams<Schema extends z.ZodSchema>({ schema, onUpdate }
       clear,
       stringify,
     },
-  ] as const;
+  ] as UseSearchParamsReturn<Schema>;
 };
