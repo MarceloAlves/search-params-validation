@@ -44,17 +44,22 @@ type Stringify = (options?: {
  * const someQuery = fetch(`http://example.com/${stringify({ extraParams: { foo: "bar" } })}`)
  * ```
  */
-export function useSearchParams<Schema extends z.AnyZodObject>({ schema, onUpdate }: { schema?: Schema, onUpdate: (querystring: string) => void }) {
+
+
+// If schema is available return type should be a partial zod schema. if not, return regular query string result
+export function useSearchParams<Schema extends z.ZodSchema>({ schema, onUpdate }: { schema?: Schema, onUpdate: (querystring: string) => void }): Schema extends true ? z.infer<Schema> : qs.ParsedQuery<string> {
   // const history = useHistory();
   // const location = useLocation();
 
   const currentSearch = useMemo(() => {
     const queryString = qs.parse(window.location.search);
     if (schema) {
-      return schema.parse(queryString) as Partial<z.infer<Schema>>;
-    } else {
-      return queryString
+      // return partial zod schema result
+      return schema.parse(queryString);
     }
+
+    // return regular query string result ParsedQuery<string>
+    return queryString
   }, [location.search, schema]);
 
   const append: Append = useCallback(
