@@ -1,0 +1,38 @@
+{
+  "name": "chakra-bare",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --port 3030",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "gen:theme-types": "chakra-cli tokens ./src/theme/index.ts",
+    "postinstall": "pnpm run gen:theme-types"
+  },
+  "prettier": "@marceloalves/prettier-config",
+  "dependencies": {
+    "@chakra-ui/icons": "2.0.19",
+    "@chakra-ui/react": "2.6.1",
+    "@chakra-ui/styled-system": "2.9.0",
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
+    "@fontsource/inter": "4.5.15",
+    "@total-typescript/ts-reset": "^0.4.2",
+    "framer-motion": "10.11.6",
+    "query-string": "^8.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "zod": "^3.21.4",
+    "zod_utilz": "^0.7.3"
+  },
+  "devDependencies": {
+    "@chakra-ui/cli": "2.4.1",
+    "@marceloalves/prettier-config": "1.0.0",
+    "@types/node": "18.15.11",
+    "@types/react": "18.2.5",
+    "@types/react-dom": "18.2.3",
+    "@vitejs/plugin-react": "3.1.0",
+    "prettier": "2.8.8",
+    "typescript": "5.0.4",
+    "vite": "4.3.4"
+  }
+}
